@@ -8,7 +8,9 @@ from english_words import get_english_words_set
 from collections import deque
 import math
 from typing import List, Set, Dict, Tuple
-l = 1.75
+
+l = 1.0
+
 letterFrequency = {
     'a': pow(9.24, l),
     'b': pow(2.51, l),
@@ -34,62 +36,6 @@ letterFrequency = {
     'w': pow(1.60, l),
     'y': pow(3.20, l)
 }
-# letterFrequency = {
-#     'e': 12.02*1.24,
-#     't': 9.10*1.16,
-#     'a': 8.12*.99,
-#     'o': 7.68*.72,
-#     'i': 7.31*1.03,
-#     'n': 6.95*1.14,
-#     's': 6.28*1.37,
-#     'r': 6.02*1.01,
-#     'h': 5.92*.5,
-#     'd': 4.32*1.18,
-#     'l': 3.98*.71,
-#     'u': 2.88*.88,
-#     'c': 2.71*.61,
-#     'm': 2.61*.97,
-#     'f': 2.30*.83,
-#     'y': 2.11*.61,
-#     'w': 2.09*.5,
-#     'g': 2.03*.44,
-#     'p': 1.82*.88,
-#     'b': 1.49*.74,
-#     'v': 1.11*1.51,
-#     'k': 0.69*1.06,
-#     'x': 0.17*.77,
-#     'q': 0.11,
-#     'j': 0.10,
-#     'z': 0.07*1.06
-# }
-# letterFrequency = {
-#     'e': 12.02,
-#     't': 9.10,
-#     'a': 8.12,
-#     'o': 7.68,
-#     'i': 7.31,
-#     'n': 6.95,
-#     's': 6.28,
-#     'r': 6.02,
-#     'h': 5.92,
-#     'd': 4.32,
-#     'l': 3.98,
-#     'u': 2.88,
-#     'c': 2.71,
-#     'm': 2.61,
-#     'f': 2.30,
-#     'y': 2.11,
-#     'w': 2.09,
-#     'g': 2.03,
-#     'p': 1.82,
-#     'b': 1.49,
-#     'v': 1.11,
-#     'k': 0.69,
-#     'x': 0.17,
-#     'q': 0.11,
-#     'j': 0.10,
-#     'z': 0.07
-# }
 
 hexBorders = {
     0: [1, 3, 4],
@@ -140,42 +86,7 @@ scrabbleScores = {
     'x': 1,
     'y': 1,
     'z': 1
-    # 'a': 1,
-    # 'b': 3,
-    # 'c': 3,
-    # 'd': 2,
-    # 'e': 1,
-    # 'f': 4,
-    # 'g': 2,
-    # 'h': 4,
-    # 'i': 1,
-    # 'j': 8,
-    # 'k': 5,
-    # 'l': 1,
-    # 'm': 3,
-    # 'n': 1,
-    # 'o': 1,
-    # 'p': 3,
-    # 'q': 10,
-    # 'r': 1,
-    # 's': 1,
-    # 't': 1,
-    # 'u': 1,
-    # 'v': 4,
-    # 'w': 4,
-    # 'x': 8,
-    # 'y': 4,
-    # 'z': 10
 }
-
-# dict = set(open('/usr/share/dict/words').read().split())
-# dict = get_english_words_set(['web2'], lower=True)
-# dict = set(word for word in dict if len(word) >= 2)
-# listdict = list(dict)
-# listdict.sort()
-with open('words.txt', 'r') as f:
-    dict = f.read().split()
-    dict = set(word for word in dict if len(word) >= 2)
 
 def letgen(frequencies):
     letters = list(frequencies.keys())
@@ -192,66 +103,6 @@ def scramble(word):
 def scrabble(word):
     naive = sum(scrabbleScores[letter] for letter in word)
     return naive
-    # naive = naive * pow(len(word), 1.65)
-    # return naive // 10
-
-
-# def precompute_words(board):
-#     word_dict = {}
-#     for i in range(19):
-#         for length in range(1, 20):  # Assuming maximum word length is 19
-#             frontier = deque([(str(i), board[i])])
-#             while frontier:
-#                 path, word = frontier.popleft()
-#                 if word in dict:
-#                     word_dict[path] = word
-#                 if len(path) < length:
-#                     last = int(path.split(',')[-1])
-#                     for j in hexBorders[last]:
-#                         if str(j) not in path:
-#                             new_path = path + ',' + str(j)
-#                             new_word = word + board[j]
-#                             frontier.append((new_path, new_word))
-#     return word_dict
-#
-#
-# def search(board):
-#     score = 0
-#     words_found = set()
-#     precomputed_words = precompute_words(board)
-#
-#     for path, word in precomputed_words.items():
-#         if word not in words_found:
-#             score += scrabble(word)
-#             words_found.add(word)
-#
-#     return score, words_found, len(precomputed_words)
-
-# def search(board):
-#     tries = 0
-#     score = 0
-#     words_found = set()
-#     for i in range(19):
-#         tried = set()
-#         frontier = deque([str(i)])
-#         while frontier:
-#             next = frontier.popleft()
-#             if next not in tried:
-#                 tries += 1
-#                 tried.add(next)
-#                 nextList = next.split(',')
-#                 word = ''.join(board[int(j)] for j in nextList)
-#                 if word in dict and word not in words_found:
-#                     score += scrabble(word)
-#                     words_found.add(word)
-#                 for j in hexBorders[int(nextList[-1])]:
-#                     if str(j) not in nextList:
-#                         frontier.append(next + ',' + str(j))
-#     return score, words_found, tries
-
-from collections import deque
-from typing import List, Set, Dict, Tuple
-
 
 class TrieNode:
     def __init__(self):
@@ -322,10 +173,8 @@ def dfs(index: int, current_word: str, path: str, visited: Set[int], board: List
                 max_length)
             visited.remove(neighbor)
 
-
-def search(board: List[str], dict: List[str], hex_borders: Dict[int, List[int]],
+def search(board: List[str], trie, hex_borders: Dict[int, List[int]],
            scrabble: callable) -> Tuple[int, Set[str], int]:
-    trie = build_trie(dict)
     precomputed_words = precompute_words(board, trie, hex_borders)
 
     score = 0
@@ -337,56 +186,53 @@ def search(board: List[str], dict: List[str], hex_borders: Dict[int, List[int]],
 
     return score, words_found, len(precomputed_words)
 
+with open('words.txt', 'r') as f:
+    dict = f.read().split()
+    dict = [word for word in dict if len(word) >= 2]
+trie = build_trie(list(dict))
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 driver.get('https://hacktimes.hackmit.org/')
 driver.get('https://hexhunt.hackmit.org/u/TheWelcomer_ae0cf11f')
 
-
 def run():
     runs = 0
     lastChange = 0
-    tested = set()
-    # bestWord = [letgen(letterFrequency) for _ in range(19)]
-    bestWord = [*'masserernilsetapsse']
     bestScore = 0
     bestHexScore = 0
-    # print(f'Run {runs} {tries}: {"".join(bestWord)} ({bestScore}) {words}')
-    # bestWord = scramble(bestWord)
+    tested = set()
+    mode = input('Scratch? ')
+    if mode == 'y':
+        bestWord = [letgen(letterFrequency) for _ in range(19)]
+    else:
+        starter = input('Enter string: ')
+        bestWord = [*f'{starter}']
+        toScramble = input('Scramble? ')
+        if toScramble == 'y':
+            bestWord = scramble(bestWord)
+    global l
+    l = float(input("Enter lambda: "))
     while True:
         with open('mamba.txt', 'a') as f:
             rawWord = bestWord.copy()
-            # tech = random.randint(0, 1)
-            # if tech == 0:
             if runs != 0:
                 while True:
                     changeIndex = random.randint(0, 18)
                     rawWord[changeIndex] = letgen(letterFrequency)
                     if random.randint(1, 1) == 1:
-                        # changeIndex = random.randint(0, 18)
                         changeIndex = hexBorders[changeIndex][random.randint(0, len(hexBorders[changeIndex]) - 1)]
                         rawWord[changeIndex] = letgen(letterFrequency)
                     if tuple(rawWord) not in tested:
                         break
-            # if tech == 1:
-            #     tiles = random.randint(2, 3)
-            #     dictListInsert = [w for w in dict if len(w) == tiles]
-            #     toInsert = random.choice(dictListInsert).lower()
-            #     changeIndex = random.randint(0, 18)
-            #     for i in range(tiles):
-            #         rawWord[changeIndex] = toInsert[i]
-            #         changeIndex = hexBorders[changeIndex][random.randint(0, len(hexBorders[changeIndex]) - 1)]
-
-            score, words, tries = search(rawWord)
+            score, words, tries = search(rawWord, trie, hexBorders, scrabble)
             tested.add(tuple(rawWord))
             if score > bestScore * .95:
-                # bestScore += 10
                 print(f'Run {runs} {tries}: {"".join(rawWord)} ({score}) {words}')
                 f.write(f'Run {runs} {tries}: {"".join(rawWord)} ({score}) {words}\n')
                 driver.find_element('xpath', '//div[@class="hexagon"]').click()
                 for i in range(19):
-                    input = driver.find_element('xpath', '//input[@class="hex-input"]')
-                    input.send_keys(rawWord[i])
+                    tiles = driver.find_element('xpath', '//input[@class="hex-input"]')
+                    tiles.send_keys(rawWord[i])
                 driver.find_elements('xpath', '//button[@type="button"]')[1].click()
                 while (len(driver.find_elements('xpath', '//p[@class="mantine-focus-auto m_b6d8b162 mantine-Text-root"]')) == 1):
                     continue
@@ -409,7 +255,6 @@ def run():
             # else:
                 # if lastChange > (score // 10) * math.log(score // 10):
                 #     break
-            # bestScore -= 1
             lastChange += 1
             runs += 1
 
