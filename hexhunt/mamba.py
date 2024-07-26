@@ -200,7 +200,6 @@ def run():
     lastChange = 0
     bestScore = 0
     bestHexScore = 0
-    tested = set()
     mode = input('Scratch? ')
     if mode == 'y':
         bestWord = [letgen(letterFrequency) for _ in range(19)]
@@ -222,41 +221,39 @@ def run():
                     if random.randint(1, 1) == 1:
                         changeIndex = hexBorders[changeIndex][random.randint(0, len(hexBorders[changeIndex]) - 1)]
                         rawWord[changeIndex] = letgen(letterFrequency)
-                    if tuple(rawWord) not in tested:
-                        break
             score, words, tries = search(rawWord, trie, hexBorders, scrabble)
-            tested.add(tuple(rawWord))
-            if score > bestScore * .95:
-                print(f'Run {runs} {tries}: {"".join(rawWord)} ({score}) {words}')
-                f.write(f'Run {runs} {tries}: {"".join(rawWord)} ({score}) {words}\n')
-                driver.find_element('xpath', '//div[@class="hexagon"]').click()
-                for i in range(19):
-                    tiles = driver.find_element('xpath', '//input[@class="hex-input"]')
-                    tiles.send_keys(rawWord[i])
-                driver.find_elements('xpath', '//button[@type="button"]')[1].click()
-                while (len(driver.find_elements('xpath', '//p[@class="mantine-focus-auto m_b6d8b162 mantine-Text-root"]')) == 1):
-                    continue
-                sleep(2.75)
-                textboxes = driver.find_elements('xpath', '//p[@class="mantine-focus-auto m_b6d8b162 mantine-Text-root"]')
-                for i in range(len(textboxes)):
-                    textboxes[i] = textboxes[i].text
-                if len(textboxes) != 2:
-                    bigWord = textboxes[1]
-                    hexScore = int(textboxes[2][15:])
-                    print(bigWord, hexScore)
-                    f.write(f'{bigWord} {hexScore}\n')
-                    if hexScore >= bestHexScore:
-                        print('New best')
-                        f.write('New best')
-                        bestScore = score
-                        lastChange = 0
-                        bestHexScore = hexScore
-                        bestWord = rawWord.copy()
+            # if score > bestScore * .95:
+            #     print(f'Run {runs} {tries}: {"".join(rawWord)} ({score}) {words}')
+            #     f.write(f'Run {runs} {tries}: {"".join(rawWord)} ({score}) {words}\n')
+            #     driver.find_element('xpath', '//div[@class="hexagon"]').click()
+            #     for i in range(19):
+            #         tiles = driver.find_element('xpath', '//input[@class="hex-input"]')
+            #         tiles.send_keys(rawWord[i])
+            #     driver.find_elements('xpath', '//button[@type="button"]')[1].click()
+            #     while (len(driver.find_elements('xpath', '//p[@class="mantine-focus-auto m_b6d8b162 mantine-Text-root"]')) == 1):
+            #         continue
+            #     sleep(2.75)
+            #     textboxes = driver.find_elements('xpath', '//p[@class="mantine-focus-auto m_b6d8b162 mantine-Text-root"]')
+            #     for i in range(len(textboxes)):
+            #         textboxes[i] = textboxes[i].text
+            #     if len(textboxes) != 2:
+            #         bigWord = textboxes[1]
+            #         hexScore = int(textboxes[2][15:])
+            #         print(bigWord, hexScore)
+            #         f.write(f'{bigWord} {hexScore}\n')
+            #         if hexScore >= bestHexScore:
+            #             print('New best')
+            #             f.write('New best')
+            #             bestScore = score
+            #             lastChange = 0
+            #             bestHexScore = hexScore
+            #             bestWord = rawWord.copy()
             # else:
                 # if lastChange > (score // 10) * math.log(score // 10):
                 #     break
             lastChange += 1
             runs += 1
+            print(runs)
 
 while True:
     run()
