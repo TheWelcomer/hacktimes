@@ -33,7 +33,7 @@ driver.get('https://hexhunt.hackmit.org/u/TheWelcomer_ae0cf11f')
 # Nav to Hexhunt
 score = 0
 numRead = len(results)
-with open('words.txt', 'r') as f:
+with open('mamba.txt', 'r') as f:
     f = f.read()
     words = [f[i:i + 19] for i in range(0, len(f), 19)]
     for i in range(0, 1000):

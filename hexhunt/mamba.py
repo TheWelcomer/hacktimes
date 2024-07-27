@@ -8,8 +8,37 @@ from english_words import get_english_words_set
 from collections import deque
 import math
 from typing import List, Set, Dict, Tuple
+import statistics
 
 l = 1.0
+
+"""
+letterFrequency = {
+    'a': pow(9.24, l),
+    # 'b': pow(2.51, l),
+    # 'c': pow(3.13, l),
+    'd': pow(3.78, l),
+    'e': pow(10.27, l),
+    # 'f': pow(1.72, l),
+    # 'g': pow(2.53, l),
+    # 'h': pow(2.71, l),
+    'i': pow(5.80, l),
+    # 'j': pow(.45, l),
+    # 'k': pow(2.32, l),
+    'l': pow(5.2, l),
+    'm': pow(3.05, l),
+    'n': pow(4.55, l),
+    'o': pow(6.84, l),
+    'p': pow(3.11, l),
+    'r': pow(6.41, l),
+    's': pow(10.28, l),
+    't': pow(5.08, l),
+    # 'u': pow(3.87, l),
+    # 'v': pow(1.07, l),
+    # 'w': pow(1.60, l),
+    # 'y': pow(3.20, l)
+}
+"""
 
 letterFrequency = {
     'a': pow(9.24, l),
@@ -186,7 +215,7 @@ def search(board: List[str], trie, hex_borders: Dict[int, List[int]],
 
     return score, words_found, len(precomputed_words)
 
-with open('words.txt', 'r') as f:
+with open('npm1.txt', 'r') as f:
     dict = f.read().split()
     dict = [word for word in dict if len(word) >= 2]
 trie = build_trie(list(dict))
@@ -200,6 +229,7 @@ def run():
     lastChange = 0
     bestScore = 0
     bestHexScore = 0
+    tried = set()
     mode = input('Scratch? ')
     if mode == 'y':
         bestWord = [letgen(letterFrequency) for _ in range(19)]
@@ -216,44 +246,67 @@ def run():
             rawWord = bestWord.copy()
             if runs != 0:
                 while True:
-                    changeIndex = random.randint(0, 18)
-                    rawWord[changeIndex] = letgen(letterFrequency)
-                    if random.randint(1, 1) == 1:
-                        changeIndex = hexBorders[changeIndex][random.randint(0, len(hexBorders[changeIndex]) - 1)]
-                        rawWord[changeIndex] = letgen(letterFrequency)
+                    tech = random.randint(1, 2)
+                    if tech == 1:
+                        changeIndex = random.randint(0, 18)
+                        for i in range(random.randint(1, 3)):
+                            rawWord[changeIndex] = letgen(letterFrequency)
+                            changeIndex = random.choice(hexBorders[changeIndex])
+                    if tech == 2:
+                        for i in range(random.randint(1, 3)):
+                            changeIndex = random.randint(0, 18)
+                            rawWord[changeIndex] = letgen(letterFrequency)
+                    if not tuple(rawWord) in tried:
+                        break
+                tried.add(tuple(rawWord))
             score, words, tries = search(rawWord, trie, hexBorders, scrabble)
-            # if score > bestScore * .95:
-            #     print(f'Run {runs} {tries}: {"".join(rawWord)} ({score}) {words}')
-            #     f.write(f'Run {runs} {tries}: {"".join(rawWord)} ({score}) {words}\n')
-            #     driver.find_element('xpath', '//div[@class="hexagon"]').click()
-            #     for i in range(19):
-            #         tiles = driver.find_element('xpath', '//input[@class="hex-input"]')
-            #         tiles.send_keys(rawWord[i])
-            #     driver.find_elements('xpath', '//button[@type="button"]')[1].click()
-            #     while (len(driver.find_elements('xpath', '//p[@class="mantine-focus-auto m_b6d8b162 mantine-Text-root"]')) == 1):
-            #         continue
-            #     sleep(2.75)
-            #     textboxes = driver.find_elements('xpath', '//p[@class="mantine-focus-auto m_b6d8b162 mantine-Text-root"]')
-            #     for i in range(len(textboxes)):
-            #         textboxes[i] = textboxes[i].text
-            #     if len(textboxes) != 2:
-            #         bigWord = textboxes[1]
-            #         hexScore = int(textboxes[2][15:])
-            #         print(bigWord, hexScore)
-            #         f.write(f'{bigWord} {hexScore}\n')
-            #         if hexScore >= bestHexScore:
-            #             print('New best')
-            #             f.write('New best')
-            #             bestScore = score
-            #             lastChange = 0
-            #             bestHexScore = hexScore
-            #             bestWord = rawWord.copy()
+            # if bestHexScore < 500:
+            #     threshold = 2 * bestScore
+            # elif bestHexScore < 1000:
+            #     threshold = 1.35 * bestScore
+            if bestHexScore < 1500:
+                threshold = 1.2 * bestScore
+            elif bestHexScore < 2000:
+                threshold = 1.1 * bestScore
+            if bestHexScore < 2500:
+                threshold = 1.025 * bestScore
+            elif bestHexScore < 3000:
+                threshold = 1.015 * bestScore
+            elif bestHexScore < 3500:
+                threshold = 0.98 * bestScore
+            else:
+                threshold = 1.000 * bestScore
+            if score > threshold:
+                print(f'Run {runs} {tries}: {"".join(rawWord)} ({score}) {words}')
+                f.write(f'Run {runs} {tries}: {"".join(rawWord)} ({score}) {words}\n')
+                driver.find_element('xpath', '//div[@class="hexagon"]').click()
+                for i in range(19):
+                    tiles = driver.find_element('xpath', '//input[@class="hex-input"]')
+                    tiles.send_keys(rawWord[i])
+                driver.find_elements('xpath', '//button[@type="button"]')[1].click()
+                while (len(driver.find_elements('xpath', '//p[@class="mantine-focus-auto m_b6d8b162 mantine-Text-root"]')) == 1):
+                    continue
+                sleep(2.75)
+                textboxes = driver.find_elements('xpath', '//p[@class="mantine-focus-auto m_b6d8b162 mantine-Text-root"]')
+                for i in range(len(textboxes)):
+                    textboxes[i] = textboxes[i].text
+                if len(textboxes) != 2:
+                    bigWord = textboxes[1]
+                    hexScore = int(textboxes[2][15:])
+                    print(bigWord, hexScore)
+                    f.write(f'{bigWord} {hexScore}\n')
+                    if hexScore >= bestHexScore:
+                        print('New best')
+                        f.write('New best')
+                        bestScore = score
+                        lastChange = 0
+                        bestHexScore = hexScore
+                        bestWord = rawWord.copy()
             # else:
-                # if lastChange > (score // 10) * math.log(score // 10):
-                #     break
+            #     if lastChange > 10000:
+            #         break
             lastChange += 1
             runs += 1
-            print(runs)
 
 while True:
     run()
