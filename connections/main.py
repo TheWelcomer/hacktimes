@@ -63,20 +63,20 @@ round = 0
 hiddenEmojis = []
 
 while True:
-    if round == 0:
-        emoji = '🐀'
-    elif round == 1:
-        emoji = '👿'
-    elif round == 2:
-        emoji = '🐁'
-    elif round == 3:
-        emoji = '🐃'
-    elif round == 4:
-        emoji = '🐿'
-    elif round == 5:
-        emoji
-    else:
-        emoji = input('Enter emoji: ')
+    # if round == 0:
+    #     emoji = '🐀'
+    # elif round == 1:
+    #     emoji = '👿'
+    # elif round == 2:
+    #     emoji = '🐁'
+    # elif round == 3:
+    #     emoji = '🐃'
+    # elif round == 4:
+    #     emoji = '🐿'
+    # elif round == 5:
+    #     emoji
+    # else:
+    emoji = input('Enter emoji: ')
     catClear(emoji)
     hiddenEmojis.append(emoji)
     round += 1
